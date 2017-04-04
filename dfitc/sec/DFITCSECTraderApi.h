@@ -2,9 +2,9 @@
 * 版权所有(C)2012-2016, 大连飞创信息技术有限公司
 * 文件名称：DFITCSECTraderApi.h
 * 文件说明：定义接口所需的数据接口
-* 当前版本：1.6.47
+* 当前版本：1.6.73
 * 作者：XSpeed证券项目组
-* 发布日期：2016年06月
+* 发布日期：2016年09月
 */
 #ifndef DFITCSECTRADERAPI_H_
 #define DFITCSECTRADERAPI_H_
@@ -35,7 +35,11 @@ public:
     /**
      * SEC-网络连接不正常响应
      */
-    virtual void OnFrontDisconnected(int nReason) {};  
+    virtual void OnFrontDisconnected(int nReason) {};
+    /**
+     * SEC-消息通知
+     */
+    virtual void OnRtnNotice(DFITCSECRspNoticeField *pNotice) {};
     /**
     * ERR-错误应答
     * @param pRspInfo:指针若非空，返回错误信息结构地址
@@ -612,7 +616,7 @@ public:
      /**
       * 创建DFITCSECTraderApi接口对象
       * @ pszLogAddr log所在的路径，如果pszLogAddress为NULL，则不生成log。
-	  * @ pszPriFlowDir 私有流记录所在的路径，如果pszPriFlowDir为NULL，则默认将私有流记录在当前目录下。
+      * @ pszPriFlowDir 私有流记录所在的路径，如果pszPriFlowDir为NULL，则默认将私有流记录在当前目录下。
       */
      static DFITCSECTraderApi *CreateDFITCSECTraderApi(const char* pszLogAddr = "", const char* pszPriFlowDir = "");
      /**
@@ -636,8 +640,9 @@ public:
       *         TERT_RESUME:从上次收到的续传
       *         TERT_QUICK:只传送登录后私有流的内容
       * @remark 该方法要在UserLogin方法前调用。若不调用则不会收到私有流的数据。
+      * @return : 0 表示请求发送成功，非 0 表示请求发送失败，具体错误请参考error.xml
       */
-     virtual void SubscribePrivateTopic(RESUME_TYPE nResumeType) = 0; 
+     virtual int SubscribePrivateTopic(RESUME_TYPE nResumeType) = 0; 
      /**
       * STOCK-登录请求
       * @param p:指向用户登录请求结构体的地址
